@@ -1,16 +1,23 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import styles from "./Player.module.css";
 import Banner from "components/Banner";
 import Titulo from "components/Titulo";
 import { useParams } from "react-router-dom";
-import videos from "json/db.json";
 import NaoEncontrada from "pages/NaoEncontrada";
 
 function Player() {
+  const [video, setVideo] = useState();
   const parametros = useParams();
-  const video = videos.find((video) => {
-    return video.id === Number(parametros.id);
-  });
+
+  useEffect(() => {
+    fetch(
+      `https://my-json-server.typicode.com/humbertobrasileiro/cinetag-api/videos?id=${parametros.id}`
+    )
+      .then((resposta) => resposta.json())
+      .then((dados) => {
+        setVideo(...dados);
+      });
+  }, []);
 
   if (!video) {
     return <NaoEncontrada />;
